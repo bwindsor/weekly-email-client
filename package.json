@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Web client for the weekly-email backend.",
   "scripts": {
-    "start": "npm run build && start /max index.html",
+    "start": "start /max ./dist/index.html",
+    "start-dev": "npm run build && start /max dist/index.html",
     "build": "node_modules/.bin/webpack",
     "test": ""
   },
@@ -16,19 +17,21 @@
   "homepage": "https://github.com/bwindsor/weekly-email-client#readme",
   "dependencies": {
     "@types/react": "^15.0.29",
+    "@types/react-datepicker": "^0.46.2",
     "@types/react-dom": "^15.5.0",
     "@types/react-leaflet": "^1.1.2",
-    "@types/react-redux": "^4.4.44",
     "leaflet": "^1.0.3",
     "react": "^15.6.1",
+    "react-datepicker": "^0.48.0",
     "react-dom": "^15.6.1",
-    "react-leaflet": "^1.3.0",
-    "react-redux": "^5.0.5"
+    "react-leaflet": "^1.3.0"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^3.1.3",
     "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.28.4",
     "source-map-loader": "^0.2.1",
+    "style-loader": "^0.18.2",
     "typescript": "2.3.4",
     "webpack": "^3.0.0"
   }

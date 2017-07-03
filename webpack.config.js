@@ -24,16 +24,18 @@ module.exports = {
             { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
 
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+
+            // Any .css files are treated as css
+            { test: /\.css$/, use: [ 'style-loader', 'css-loader' ] }
         ]
     },
 
      plugins: [
         new CopyWebpackPlugin([
-            { from: './node_modules/react/dist/react.js' },
-            { from: './node_modules/react-dom/dist/react-dom.js' },
             { from: 'node_modules/leaflet/dist/leaflet.css'},
-            { from: './src/style.css'}
+            { from: './src/style.css'},
+            { from: './src/index.html'}
         ])
      ],
 
