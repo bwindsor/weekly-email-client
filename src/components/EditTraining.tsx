@@ -10,11 +10,6 @@ interface EditTrainingParams {
 
 export default class EditTraining extends React.Component<EditTrainingParams, undefined> {
 
-    handleDateChange(e:moment.Moment) { this.props.updateCallback({
-        date_start: Math.round(e.toDate().getTime()/1000)
-    })
-    }
-
     render() {
         return (
             <div>
