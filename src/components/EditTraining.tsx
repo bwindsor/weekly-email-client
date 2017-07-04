@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Training, TrainingSubset } from "../common/AppState"
-import DatePicker from "react-datepicker"
+import LabelledDatePicker from "./LabelledDatePicker"
 import * as moment from 'moment';
 
 interface EditTrainingParams {
@@ -17,12 +17,18 @@ export default class EditTraining extends React.Component<EditTrainingParams, un
 
     render() {
         return (
-            <form>
-                <DatePicker
-                    selected={moment.unix(this.props.training.date_start)}
-                    onChange={(e)=>this.handleDateChange(e)}
-                />
-            </form>
+            <div>
+            <LabelledDatePicker
+                label="Start date"
+                unix_time={this.props.training.date_start}
+                onChange={(unix_time)=>this.props.updateCallback({date_start: unix_time})}
+            />
+            <LabelledDatePicker
+                label="End date"
+                unix_time={this.props.training.date_end}
+                onChange={(unix_time)=>this.props.updateCallback({date_end: unix_time})}
+            />
+            </div>
         );
     }
 }
