@@ -9,7 +9,7 @@ interface LabelledDatePickerParams {
 }
 
 let styles = {
-    wrapper: {width: "500px"},
+    wrapper: {width: "500px", padding: "3px"},
     left: {width: "200px", float:"left", display:'inline-block'},
     mid: {width: "200px", float: "left", display:'inline-block'},
     right: {display:'inline-block'}
