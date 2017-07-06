@@ -7,8 +7,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 export class App extends React.Component<undefined, AppState> {
     constructor(props : any) {
         super(props);
+        let defaultTraining = CreateDefaultTraining()
         this.state = {
-            trainings: [ CreateDefaultTraining() ],
+            trainings: [ defaultTraining ],
             currentTraining: 0
         }
     }

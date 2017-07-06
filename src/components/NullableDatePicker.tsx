@@ -2,20 +2,18 @@ import * as React from "react"
 import DatePicker from "react-datepicker"
 import * as moment from 'moment';
 
-interface LabelledDatePickerParams {
-    label: string
+interface NullableDatePickerParams {
     unix_time: number | null;
     onChange: (unix_time: number) => void;
 }
 
 let styles = {
-    wrapper: {width: "500px", padding: "3px"},
+    wrapper: {width: "100%", padding: "3px"},
     left: {width: "200px", float:"left", display:'inline-block'},
-    mid: {width: "200px", float: "left", display:'inline-block'},
     right: {display:'inline-block'}
 }
 
-export default class LabelledDatePicker extends React.Component<LabelledDatePickerParams, undefined> {
+export default class NullableDatePicker extends React.Component<NullableDatePickerParams, undefined> {
 
     handleDateChange(e:moment.Moment) { this.props.onChange(
         Math.round(e.toDate().getTime()/1000)
@@ -26,9 +24,6 @@ export default class LabelledDatePicker extends React.Component<LabelledDatePick
         return (
             <div style={styles.wrapper}>
                 <div style={styles.left}>
-                    {this.props.label}
-                </div>
-                <div style={styles.mid}>
                     
                     {this.props.unix_time!=null ? (
                         <DatePicker
