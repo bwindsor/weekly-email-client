@@ -21,6 +21,13 @@ export interface Training {
     cost_junior: number | null;
     other_info: string | null;
 }
+export interface ShortTraining{
+    id: number;
+    date_start: number;
+    location_name: string;
+    start_lat: number | null;
+    start_lon: number | null;
+}
 export interface TrainingSubset {
     id?: number;
     date_start?: number;
@@ -46,8 +53,8 @@ export interface TrainingSubset {
 }
 
 interface AppState {
-    trainings: Training[];
-    currentTraining: number;
+    allTrainings: ShortTraining[]
+    training: Training;
 }
 
 export function CreateDefaultTraining() : Training {

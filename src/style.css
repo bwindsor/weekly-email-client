@@ -6,3 +6,13 @@ body {
     width: 100%;
     margin: 0 auto;
 }
+div.training-list {
+    display: table-cell;
+    background-color: paleturquoise;
+    padding: 8px;
+}
+div.training-detail {
+    background: lightblue;
+    display: table-cell;
+    padding: 8px;
+}

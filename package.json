@@ -16,11 +16,13 @@
   "license": "MIT",
   "homepage": "https://github.com/bwindsor/weekly-email-client#readme",
   "dependencies": {
+    "@types/node-fetch": "^1.6.7",
     "@types/react": "^15.0.29",
     "@types/react-datepicker": "^0.46.2",
     "@types/react-dom": "^15.5.0",
     "@types/react-leaflet": "^1.1.2",
     "leaflet": "^1.0.3",
+    "node-fetch": "^1.7.1",
     "react": "^15.6.1",
     "react-datepicker": "^0.48.0",
     "react-dom": "^15.6.1",
