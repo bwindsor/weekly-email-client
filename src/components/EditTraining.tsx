@@ -30,6 +30,10 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
     validateString(text:string) : boolean {
         return true
     }
+    validateTime(text:string | null) : boolean {
+        if (text==null) {return true}
+        return text.match(/^(([01]?[0-9])|(2[0-3])):[0-5][0-9]$/) != null    
+}
     validateCost(text:string) : boolean {
         return text.match(/^\d{0,6}(\.\d{0,2})?$/) != null
     }
@@ -133,6 +137,22 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     isValid={true}
                 />
             </LabelledInput>
+            <LabelledInput label="First start time">
+                <TextInput
+                    text={this.props.training.first_start_time}
+                    onChange={s => this.props.updateCallback({first_start_time: s})}
+                    placeholder="e.g. 18:00"
+                    isValid={this.validateTime(this.props.training.first_start_time)}
+                />
+            </LabelledInput>
+                        <LabelledInput label="First start time">
+                <TextInput
+                    text={this.props.training.last_start_time}
+                    onChange={s => this.props.updateCallback({last_start_time: s})}
+                    placeholder="e.g. 18:30"
+                    isValid={this.validateTime(this.props.training.last_start_time)}
+                />
+            </LabelledInput>
             <LabelledInput label="Cost (Junior)">
                 <TextInput
                     text={this.state.cost_junior_text}
@@ -155,6 +175,7 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     onClick={(lat,lon)=>{this.props.updateCallback({parking_lat: lat, parking_lon: lon})}}
                 />
             </LabelledInput>
+            // TODO - Juniors tickbox, first start, last start
             </div>
         );
     }
