@@ -83,6 +83,20 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     isValid={this.validateNotNull(this.props.training.location_name)}
             />
             </LabelledInput>
+            <LabelledInput label="Address">
+                <TextInput
+                    text={this.props.training.address}
+                    onChange={s=>this.props.updateCallback({address: s})}
+                    isValid={this.validateString(this.props.training.address)}
+            />
+            </LabelledInput>
+             <LabelledInput label="Start Location" height="200px">
+                <MapPointSelector
+                    lat={this.props.training.start_lat}
+                    lon={this.props.training.start_lon}
+                    onClick={(lat,lon)=>{this.props.updateCallback({start_lat: lat, start_lon: lon})}}
+                />
+            </LabelledInput>
             <LabelledInput label="First start time">
                 <TextInput
                     text={this.props.training.first_start_time}
@@ -99,19 +113,19 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     isValid={this.validateTime(this.props.training.last_start_time)}
                 />
             </LabelledInput>
-            <LabelledInput label="Address">
-                <TextInput
-                    text={this.props.training.address}
-                    onChange={s=>this.props.updateCallback({address: s})}
-                    isValid={this.validateString(this.props.training.address)}
-                />
-            </LabelledInput>
             <LabelledInput label="Description">
                 <TextInput
                     text={this.props.training.description}
                     onChange={s=>this.props.updateCallback({description: s})}
                     placeholder="e.g. Attack points"
                     isValid={this.validateString(this.props.training.description)}
+                />
+            </LabelledInput>
+             <LabelledInput label="Parking Location" height="200px">
+                <MapPointSelector
+                    lat={this.props.training.parking_lat}
+                    lon={this.props.training.parking_lon}
+                    onClick={(lat,lon)=>{this.props.updateCallback({parking_lat: lat, parking_lon: lon})}}
                 />
             </LabelledInput>
             <LabelledInput label="Parking Further Info">
@@ -167,6 +181,13 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     isValid={true}
                 />
             </LabelledInput>
+            <LabelledInput label="Juniors allowed?">
+                <tbody><tr>
+                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==1} value="yes"  onChange={e=>this.onJuniorsChange(e)}>Yes</input></td>                    
+                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==0} value="no" onChange={e=>this.onJuniorsChange(e)}>No</input></td>
+                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==null} value="Not specified"  onChange={e=>this.onJuniorsChange(e)}>Not specified</input></td>
+                </tr></tbody>
+            </LabelledInput>
             <LabelledInput label="Cost (Junior)">
                 <TextInput
                     text={this.state.cost_junior_text}
@@ -174,27 +195,6 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     placeholder="e.g. 1.50"
                     isValid={true}
                 />
-            </LabelledInput>
-            <LabelledInput label="Start Location" height="200px">
-                <MapPointSelector
-                    lat={this.props.training.start_lat}
-                    lon={this.props.training.start_lon}
-                    onClick={(lat,lon)=>{this.props.updateCallback({start_lat: lat, start_lon: lon})}}
-                />
-            </LabelledInput>
-            <LabelledInput label="End Location" height="200px">
-                <MapPointSelector
-                    lat={this.props.training.parking_lat}
-                    lon={this.props.training.parking_lon}
-                    onClick={(lat,lon)=>{this.props.updateCallback({parking_lat: lat, parking_lon: lon})}}
-                />
-            </LabelledInput>
-            <LabelledInput label="Juniors allowed?">
-                <tbody><tr>
-                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==1} value="yes"  onChange={e=>this.onJuniorsChange(e)}>Yes</input></td>                    
-                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==0} value="no" onChange={e=>this.onJuniorsChange(e)}>No</input></td>
-                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==null} value="Not specified"  onChange={e=>this.onJuniorsChange(e)}>Not specified</input></td>
-                </tr></tbody>
             </LabelledInput>
             </div>
         );
