@@ -17,16 +17,17 @@ div.training-detail {
     display: table-cell;
     padding: 8px;
 }
-tr.navRow tr.navRow-selected {
+tr.navRow, tr.navRow-selected {
     cursor: pointer;
+    color: darkblue;
 }
-tr.navRow:hover tr.navRow-selected:hover {
+tr.navRow:hover, tr.navRow-selected:hover {
     cursor: pointer;
-    color: lightsalmon;
+    color: mediumturquoise;
 }
 tr.navRow-selected {
     font-weight: bold;
 }
 table.nav-table {
-    color: darkblue;
+    
 }
