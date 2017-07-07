@@ -10,9 +10,23 @@ div.training-list {
     display: table-cell;
     background-color: paleturquoise;
     padding: 8px;
+    width: 200px;
 }
 div.training-detail {
     background: lightblue;
     display: table-cell;
     padding: 8px;
+}
+tr.navRow tr.navRow-selected {
+    cursor: pointer;
+}
+tr.navRow:hover tr.navRow-selected:hover {
+    cursor: pointer;
+    color: lightsalmon;
+}
+tr.navRow-selected {
+    font-weight: bold;
+}
+table.nav-table {
+    color: darkblue;
 }
