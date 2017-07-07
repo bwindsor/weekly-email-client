@@ -5,6 +5,7 @@ import * as moment from 'moment';
 interface NullableDatePickerParams {
     unix_time: number | null;
     onChange: (unix_time: number) => void;
+    isNullable: boolean;
 }
 
 let styles = {
@@ -21,6 +22,14 @@ export default class NullableDatePicker extends React.Component<NullableDatePick
     }
 
     render() {
+        if (this.props.isNullable==false) {
+            return (
+                <DatePicker
+                    selected={moment.unix(this.props.unix_time)}
+                    onChange={(e)=>this.handleDateChange(e)}
+                />
+            )
+        }
         return (
             <div style={styles.wrapper}>
                 <div style={styles.left}>

@@ -46,6 +46,18 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
             appCb(Number.parseFloat(text))
         }
     }
+    onJuniorsChange(e: React.ChangeEvent<HTMLInputElement>): void {
+        let j:number
+
+        if (e.currentTarget.value == "yes") {
+            j = 1
+        } else if (e.currentTarget.value == "no") {
+            j = 0
+        } else {
+            j = null
+        }
+        this.props.updateCallback({juniors: j})
+    }
 
     render() {
         return (
@@ -54,12 +66,14 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                 <NullableDatePicker
                     unix_time={this.props.training.date_start}
                     onChange={(unix_time)=>this.props.updateCallback({date_start: unix_time})}
+                    isNullable={false}
                 />
             </LabelledInput>
             <LabelledInput label="End date">
                 <NullableDatePicker
                     unix_time={this.props.training.date_end}
                     onChange={(unix_time)=>this.props.updateCallback({date_end: unix_time})}
+                    isNullable={true}
                 />
             </LabelledInput>
             <LabelledInput label="Location Name">
@@ -67,6 +81,22 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     text={this.props.training.location_name}
                     onChange={s=>this.props.updateCallback({location_name: s})}
                     isValid={this.validateNotNull(this.props.training.location_name)}
+            />
+            </LabelledInput>
+            <LabelledInput label="First start time">
+                <TextInput
+                    text={this.props.training.first_start_time}
+                    onChange={s => this.props.updateCallback({first_start_time: s})}
+                    placeholder="e.g. 18:00"
+                    isValid={this.validateTime(this.props.training.first_start_time)}
+                />
+            </LabelledInput>
+            <LabelledInput label="Last start time">
+                <TextInput
+                    text={this.props.training.last_start_time}
+                    onChange={s => this.props.updateCallback({last_start_time: s})}
+                    placeholder="e.g. 18:30"
+                    isValid={this.validateTime(this.props.training.last_start_time)}
                 />
             </LabelledInput>
             <LabelledInput label="Address">
@@ -137,22 +167,6 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     isValid={true}
                 />
             </LabelledInput>
-            <LabelledInput label="First start time">
-                <TextInput
-                    text={this.props.training.first_start_time}
-                    onChange={s => this.props.updateCallback({first_start_time: s})}
-                    placeholder="e.g. 18:00"
-                    isValid={this.validateTime(this.props.training.first_start_time)}
-                />
-            </LabelledInput>
-                        <LabelledInput label="First start time">
-                <TextInput
-                    text={this.props.training.last_start_time}
-                    onChange={s => this.props.updateCallback({last_start_time: s})}
-                    placeholder="e.g. 18:30"
-                    isValid={this.validateTime(this.props.training.last_start_time)}
-                />
-            </LabelledInput>
             <LabelledInput label="Cost (Junior)">
                 <TextInput
                     text={this.state.cost_junior_text}
@@ -175,7 +189,13 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     onClick={(lat,lon)=>{this.props.updateCallback({parking_lat: lat, parking_lon: lon})}}
                 />
             </LabelledInput>
-            // TODO - Juniors tickbox, first start, last start
+            <LabelledInput label="Juniors allowed?">
+                <tbody><tr>
+                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==1} value="yes"  onChange={e=>this.onJuniorsChange(e)}>Yes</input></td>                    
+                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==0} value="no" onChange={e=>this.onJuniorsChange(e)}>No</input></td>
+                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==null} value="Not specified"  onChange={e=>this.onJuniorsChange(e)}>Not specified</input></td>
+                </tr></tbody>
+            </LabelledInput>
             </div>
         );
     }
