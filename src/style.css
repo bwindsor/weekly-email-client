@@ -28,6 +28,16 @@ tr.navRow:hover, tr.navRow-selected:hover {
 tr.navRow-selected {
     font-weight: bold;
 }
-table.nav-table {
-    
+button.new-button {
+    background-color: green;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 30px;
+    height: 30px;
+    width: 30px;
+    padding: 0;
+    line-height: 0;
+    border: 2px solid black;
+    cursor: pointer;
 }

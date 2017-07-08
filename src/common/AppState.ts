@@ -52,12 +52,18 @@ export interface TrainingSubset {
     other_info?: string | null;
 }
 
+interface AddTrainingState {
+    isWaiting: boolean;
+    success: boolean;
+}
+
 interface AppState {
     allTrainings: ShortTraining[]
     training: Training;
+    addTraining: AddTrainingState;
 }
 
-export function CreateDefaultTraining() : Training {
+export function createDefaultTraining() : Training {
     return {
         id: 0,
         date_start: ((new Date().getTime())/1000),
