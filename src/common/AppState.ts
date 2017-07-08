@@ -28,6 +28,16 @@ export interface ShortTraining{
     start_lat: number | null;
     start_lon: number | null;
 }
+export function trainingToShortTraining(t:Training):ShortTraining {
+    return {
+        id: t.id,
+        date_start: t.date_start,
+        location_name: t.location_name,
+        start_lat: t.start_lat,
+        start_lon: t.start_lon
+    }
+}
+
 export interface TrainingSubset {
     id?: number;
     date_start?: number;

@@ -1,5 +1,5 @@
 import * as React from "react"
-import AppState, {createDefaultTraining, Training, TrainingSubset, ShortTraining} from "../common/AppState"
+import AppState, {trainingToShortTraining, createDefaultTraining, Training, TrainingSubset, ShortTraining} from "../common/AppState"
 import NavPane from './NavPane'
 import EditTraining from "./EditTraining"
 // import fetch from "node-fetch"
@@ -26,11 +26,22 @@ export class App extends React.Component<undefined, AppState> {
         }
     }
 
+    getSelectedTraining(): number {
+        return (this.state.training==null) ? null : this.state.training.id
+    }
+
     onEditUpdate(stateDiff: TrainingSubset) : void {
         this.setState((prevState, props):AppState => {
+            let newTraining = {...prevState.training, ...stateDiff}
+
+            let sel = this.getSelectedTraining()
+            let selIdx = prevState.allTrainings.findIndex(t=>{return t.id==sel})
+            let newAll = prevState.allTrainings.slice()
+            newAll[selIdx] = trainingToShortTraining(newTraining)
             return {
                 ...prevState,
-                training: {...prevState.training, ...stateDiff}
+                allTrainings: newAll,
+                training: newTraining
             }
         })
     }
@@ -141,7 +152,7 @@ export class App extends React.Component<undefined, AppState> {
                     </button>
                     <NavPane
                         trainings={this.state.allTrainings}
-                        selectedTraining={(this.state.training==null)?null:this.state.training.id}
+                        selectedTraining={this.getSelectedTraining()}
                         onItemSelect={id=>this.fetchTraining(id)}
                         onItemDelete={id=>this.removeTraining(id)}
                     />
