@@ -15,6 +15,8 @@ export class App extends React.Component<undefined, AppState> {
         this.state = {
             allTrainings: [],
             training: null,
+            isModified: false,
+            testSent: false,
             addTraining: {
                 isWaiting: false,
                 success: true
@@ -40,6 +42,7 @@ export class App extends React.Component<undefined, AppState> {
             newAll[selIdx] = trainingToShortTraining(newTraining)
             return {
                 ...prevState,
+                isModified: true,
                 allTrainings: newAll,
                 training: newTraining
             }
@@ -66,9 +69,31 @@ export class App extends React.Component<undefined, AppState> {
     fetchTraining(id:number) {
         fetch(url.resolve(serverName, '/trainings/'+id.toString())).then(res=>{
             res.json().then((data:Training)=>{
-                this.setState({training: data})
+                this.setState({isModified: false, training: data})
             }).catch(err=>console.log(err))
         })
+    }
+    distributeFinal(): void {
+        fetch(url.resolve(serverName, '/distribute?test=0'), {
+            method: 'POST'
+        })
+        .then(res=>{
+            if (res.status!=200) {throw Error(res.toString())}
+            this.setState({testSent: true})
+            alert("Distribution successful.")
+        })
+        .catch(err=>console.log(err))
+    }
+    distributeTest(): void {
+        fetch(url.resolve(serverName, '/distribute'), {
+            method: 'POST'
+        })
+        .then(res=>{
+            if (res.status!=200) {throw Error(res.toString())}
+            this.setState({testSent: true})
+            alert("Test distribution successful.")
+        })
+        .catch(err=>console.log(err))
     }
     removeTraining(id:number) {
         fetch(url.resolve(serverName, '/trainings/'+id.toString()), {
@@ -124,7 +149,7 @@ export class App extends React.Component<undefined, AppState> {
         })
         .then(res=>{
             if (res.status!=200) {throw Error(res.toString())}
-            this.setState({updateTraining: {...this.state.updateTraining, isWaiting: false, success: true}})
+            this.setState({isModified: false, updateTraining: {...this.state.updateTraining, isWaiting: false, success: true}})
         })
         .catch(err=>{
             console.log(err)
@@ -157,7 +182,7 @@ export class App extends React.Component<undefined, AppState> {
                         onItemDelete={id=>this.removeTraining(id)}
                     />
                 </div>
-                <div className={'training-detail'}>
+                <div className={(this.state.isModified)?'training-detail-mod':'training-detail-unmod'}>
                     {(this.state.training!=null) ? (
                         <div>
                         <button className={(this.isFormValid())?'save-button':'disabled-save-button'} onClick={e=>this.saveTraining()}>
@@ -166,6 +191,14 @@ export class App extends React.Component<undefined, AppState> {
                         <button className={'preview-button'} onClick={e=>window.open(url.resolve(serverName, '/preview'), '_blank')}>
                             Preview
                         </button>
+                        <button className={'distribute-button'} onClick={e=>this.distributeTest()}>
+                            Send test
+                        </button>
+                        {this.state.testSent && (
+                            <button className={'distribute-button'} onClick={e=>this.distributeFinal()}>
+                                Send
+                            </button>
+                        )}
                         <EditTraining 
                             training={this.state.training}
                             updateCallback={(s) => this.onEditUpdate(s)}

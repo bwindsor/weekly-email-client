@@ -70,6 +70,8 @@ interface RequestState {
 interface AppState {
     allTrainings: ShortTraining[]
     training: Training;
+    isModified: boolean;
+    testSent: boolean;
     addTraining: RequestState;
     updateTraining: RequestState;
 }
