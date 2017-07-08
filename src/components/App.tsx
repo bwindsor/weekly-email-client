@@ -79,10 +79,13 @@ export class App extends React.Component<undefined, AppState> {
         })
         .then(res=>{
             if (res.status!=200) {throw Error(res.toString())}
-            this.setState({testSent: true})
+            this.setState({testSent: false})
             alert("Distribution successful.")
         })
-        .catch(err=>console.log(err))
+        .catch(err=>{
+            console.log(err)
+            alert("Distribution failed.")
+        })
     }
     distributeTest(): void {
         fetch(url.resolve(serverName, '/distribute'), {
@@ -93,7 +96,10 @@ export class App extends React.Component<undefined, AppState> {
             this.setState({testSent: true})
             alert("Test distribution successful.")
         })
-        .catch(err=>console.log(err))
+        .catch(err=>{
+            console.log(err)
+            alert("Test distribution failed.")
+        })
     }
     removeTraining(id:number) {
         fetch(url.resolve(serverName, '/trainings/'+id.toString()), {
