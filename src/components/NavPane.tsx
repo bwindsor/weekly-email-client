@@ -4,7 +4,8 @@ import {ShortTraining} from '../common/AppState'
 interface NavPaneProps {
     trainings: ShortTraining[];
     selectedTraining: number | null;
-    onItemClick: (id: number) => void;
+    onItemSelect: (id: number) => void;
+    onItemDelete: (id: number) => void;
 }
 
 let styles = {
@@ -16,12 +17,30 @@ let styles = {
 export default class NavPane extends React.Component<NavPaneProps, undefined> {
 
     onClick(e: React.MouseEvent<HTMLTableRowElement>) : void {
-        let m = e.currentTarget.id.match(/\d+/)
-        if (m!=null && !Number.isNaN(Number.parseInt(m[0]))) {
-            this.props.onItemClick(Number.parseInt(m[0]));
+        let id = this.parseId(e.currentTarget.id)
+        if (id!=null) {
+            this.props.onItemSelect(id);
         } else {
             console.log('Error during click callback')
         }
+    }
+    onDeleteClick(e: React.MouseEvent<HTMLButtonElement>) {
+        e.stopPropagation()
+        let id = this.parseId(e.currentTarget.id)
+        if (id!=null) {
+            this.props.onItemDelete(id)
+        } else {
+            console.log('Error during delete click callback')
+        }
+    }
+    parseId(id: string):(number | null) {
+        let match = id.match(/\d+/)
+        if (match==null) {return null}
+        
+        let num = Number.parseInt(match[0])
+        if (Number.isNaN(num)) {return null}
+        
+        return num;
     }
 
     render() {
@@ -35,6 +54,13 @@ export default class NavPane extends React.Component<NavPaneProps, undefined> {
                         key={t.id.toString()}
                         onClick={e=>this.onClick(e)}>
                         <td>{d.getDate()}/{d.getMonth()+1}</td><td>{t.location_name}</td>
+                        <td>
+                            <button className={'remove-button'}
+                                id={'delete'+t.id.toString()}
+                                onClick={e=>this.onDeleteClick(e)}>
+                                X
+                            </button>
+                        </td>
                     </tr>
                 )})}
             </table>

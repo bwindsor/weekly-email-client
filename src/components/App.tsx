@@ -2,7 +2,7 @@ import * as React from "react"
 import AppState, {createDefaultTraining, Training, TrainingSubset, ShortTraining} from "../common/AppState"
 import NavPane from './NavPane'
 import EditTraining from "./EditTraining"
-import fetch from "node-fetch"
+// import fetch from "node-fetch"
 import * as url from 'url'
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -12,11 +12,14 @@ let serverName: string = window.location.origin;
 export class App extends React.Component<undefined, AppState> {
     constructor(props : any) {
         super(props);
-        let defaultTraining = createDefaultTraining()
         this.state = {
             allTrainings: [],
-            training: defaultTraining,
+            training: null,
             addTraining: {
+                isWaiting: false,
+                success: true
+            },
+            updateTraining: {
                 isWaiting: false,
                 success: true
             }
@@ -56,8 +59,24 @@ export class App extends React.Component<undefined, AppState> {
             }).catch(err=>console.log(err))
         })
     }
-    onNavClick(id: number) : void {
-        this.fetchTraining(id);
+    removeTraining(id:number) {
+        fetch(url.resolve(serverName, '/trainings/'+id.toString()), {
+            method: 'DELETE'
+        })
+        .then(res=>{
+            if (res.status!=200) {throw Error(res.toString())}
+            return this.fetchAllTrainings()
+        })
+        .then(()=>{
+            if (this.state.training.id == id) {
+                if (this.state.allTrainings.length > 0) {
+                    this.fetchTraining(this.state.allTrainings[0].id)
+                } else {
+                    this.setState({...this.state, training: null})
+                }
+            }
+        })
+        .catch(err=>console.log(err))
     }
     addTraining() {
         let newTraining = createDefaultTraining()
@@ -68,11 +87,11 @@ export class App extends React.Component<undefined, AppState> {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newTraining),
-            timeout: 5000
+            body: JSON.stringify(newTraining)
         })
         .then(res=>{return (res.status==200) ? res.json() : Promise.reject(res)})
         .then((data:Training)=> {
+            this.setState({addTraining: {...this.state.addTraining, isWaiting: false, success: true}})
             return this.fetchAllTrainings().then(()=>{
                 this.fetchTraining(data.id)
             })
@@ -81,25 +100,25 @@ export class App extends React.Component<undefined, AppState> {
             console.log(err)
             this.setState({addTraining: {...this.state.addTraining, isWaiting: false, success: false}})
         })
-/*
-        this.setState((prevState,props):AppState=>{
-            
-
-            let shortTrainings = prevState.allTrainings.slice()
-            shortTrainings.push({
-                id: newTraining.id,
-                date_start: newTraining.date_start,
-                location_name: newTraining.location_name,
-                start_lat: newTraining.start_lat,
-                start_lon: newTraining.start_lon
-            });
-            return {
-                ...prevState,
-                allTrainings: shortTrainings,
-                training: newTraining
-            }
+    }
+    updateTraining(training: Training) {
+        this.setState({updateTraining: {...this.state.updateTraining, isWaiting: true}})
+        fetch(url.resolve(serverName, '/trainings'+training.id.toString()), {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(training)
         })
-        */
+        .then(res=>{
+            if (res.status!=200) {throw Error(res.toString())}
+            this.setState({updateTraining: {...this.state.updateTraining, isWaiting: false, success: true}})
+        })
+        .catch(err=>{
+            console.log(err)
+            this.setState({updateTraining: {...this.state.updateTraining, isWaiting: false, success: false}})
+        })
     }
 
     render() {
@@ -114,7 +133,8 @@ export class App extends React.Component<undefined, AppState> {
                     <NavPane
                         trainings={this.state.allTrainings}
                         selectedTraining={(this.state.training==null)?null:this.state.training.id}
-                        onItemClick={id=>this.onNavClick(id)}
+                        onItemSelect={id=>this.fetchTraining(id)}
+                        onItemDelete={id=>this.removeTraining(id)}
                     />
                 </div>
                 <div className={'training-detail'}>

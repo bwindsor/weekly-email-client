@@ -34,10 +34,20 @@ button.new-button {
     border-radius: 5px;
     font-weight: bold;
     font-size: 30px;
-    height: 30px;
+    height: 34px;
     width: 30px;
     padding: 0;
     line-height: 0;
+    border: 2px solid black;
+    cursor: pointer;
+}
+button.remove-button {
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    width: 20px;
+    padding: 0;
     border: 2px solid black;
     cursor: pointer;
 }

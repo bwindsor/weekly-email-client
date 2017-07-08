@@ -52,7 +52,7 @@ export interface TrainingSubset {
     other_info?: string | null;
 }
 
-interface AddTrainingState {
+interface RequestState {
     isWaiting: boolean;
     success: boolean;
 }
@@ -60,7 +60,8 @@ interface AddTrainingState {
 interface AppState {
     allTrainings: ShortTraining[]
     training: Training;
-    addTraining: AddTrainingState;
+    addTraining: RequestState;
+    updateTraining: RequestState;
 }
 
 export function createDefaultTraining() : Training {
