@@ -103,7 +103,7 @@ export class App extends React.Component<undefined, AppState> {
     }
     updateTraining(training: Training) {
         this.setState({updateTraining: {...this.state.updateTraining, isWaiting: true}})
-        fetch(url.resolve(serverName, '/trainings'+training.id.toString()), {
+        fetch(url.resolve(serverName, '/trainings/'+training.id.toString()), {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -119,6 +119,15 @@ export class App extends React.Component<undefined, AppState> {
             console.log(err)
             this.setState({updateTraining: {...this.state.updateTraining, isWaiting: false, success: false}})
         })
+    }
+    saveTraining() {
+        if (this.isFormValid()) {
+            this.updateTraining(this.state.training)
+        }
+    }
+    isFormValid(): boolean {
+        if (this.state.training==null) {return false}
+        return EditTraining.prototype.validate(this.state.training)
     }
 
     render() {
@@ -139,10 +148,18 @@ export class App extends React.Component<undefined, AppState> {
                 </div>
                 <div className={'training-detail'}>
                     {(this.state.training!=null) ? (
+                        <div>
+                        <button className={(this.isFormValid())?'save-button':'disabled-save-button'} onClick={e=>this.saveTraining()}>
+                            Save
+                        </button>
+                        <button className={'preview-button'} onClick={e=>window.open(url.resolve(serverName, '/preview'), '_blank')}>
+                            Preview
+                        </button>
                         <EditTraining 
                             training={this.state.training}
                             updateCallback={(s) => this.onEditUpdate(s)}
                         />
+                        </div>
                     ) : (
                         <div>
                         Loading...

@@ -24,16 +24,21 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
         }
     }
 
-    validateNotNull(text:string) : boolean {
-        return text != null
+    validate(t: Training): boolean {
+        return (
+            this.validateLocation(t.location_name) &&
+            this.validateTime(t.first_start_time) &&
+            this.validateTime(t.last_start_time)
+        )
     }
-    validateString(text:string) : boolean {
-        return true
+
+    validateLocation(text:string) {
+        return text != null
     }
     validateTime(text:string | null) : boolean {
         if (text==null) {return true}
         return text.match(/^(([01]?[0-9])|(2[0-3])):[0-5][0-9]$/) != null    
-}
+    }
     validateCost(text:string) : boolean {
         return text.match(/^\d{0,6}(\.\d{0,2})?$/) != null
     }
@@ -79,15 +84,17 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
             <LabelledInput label="Location Name">
                 <TextInput
                     text={this.props.training.location_name}
-                    onChange={s=>this.props.updateCallback({location_name: s})}
-                    isValid={this.validateNotNull(this.props.training.location_name)}
+                    onChange={s=>{
+                            this.props.updateCallback({location_name: s})
+                        }}
+                    isValid={this.validateLocation(this.props.training.location_name)}
             />
             </LabelledInput>
             <LabelledInput label="Address">
                 <TextInput
                     text={this.props.training.address}
                     onChange={s=>this.props.updateCallback({address: s})}
-                    isValid={this.validateString(this.props.training.address)}
+                    isValid={true}
             />
             </LabelledInput>
              <LabelledInput label="Start Location" height="200px">
@@ -100,7 +107,9 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
             <LabelledInput label="First start time">
                 <TextInput
                     text={this.props.training.first_start_time}
-                    onChange={s => this.props.updateCallback({first_start_time: s})}
+                    onChange={s => {
+                        this.props.updateCallback({first_start_time: s})
+                    }}
                     placeholder="e.g. 18:00"
                     isValid={this.validateTime(this.props.training.first_start_time)}
                 />
@@ -108,7 +117,9 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
             <LabelledInput label="Last start time">
                 <TextInput
                     text={this.props.training.last_start_time}
-                    onChange={s => this.props.updateCallback({last_start_time: s})}
+                    onChange={s => {
+                        this.props.updateCallback({last_start_time: s})
+                    }}
                     placeholder="e.g. 18:30"
                     isValid={this.validateTime(this.props.training.last_start_time)}
                 />
@@ -118,7 +129,7 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     text={this.props.training.description}
                     onChange={s=>this.props.updateCallback({description: s})}
                     placeholder="e.g. Attack points"
-                    isValid={this.validateString(this.props.training.description)}
+                    isValid={true}
                 />
             </LabelledInput>
              <LabelledInput label="Parking Location" height="200px">
@@ -133,28 +144,28 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     text={this.props.training.parking_info}
                     onChange={s=>this.props.updateCallback({parking_info: s})}
                     placeholder="e.g. Cost £3. Closes at 10pm."
-                    isValid={this.validateString(this.props.training.parking_info)}
+                    isValid={true}
                 />
             </LabelledInput>
             <LabelledInput label="Organiser name">
                 <TextInput
                     text={this.props.training.organiser_name}
                     onChange={s=>this.props.updateCallback({organiser_name: s})}
-                    isValid={this.validateString(this.props.training.organiser_name)}
+                    isValid={true}
                 />
             </LabelledInput>
             <LabelledInput label="Organiser email">
                 <TextInput
                     text={this.props.training.organiser_email}
                     onChange={s=>this.props.updateCallback({organiser_email: s})}
-                    isValid={this.validateString(this.props.training.organiser_email)}
+                    isValid={true}
                 />
             </LabelledInput>
             <LabelledInput label="Organiser phone">
                 <TextInput
                     text={this.props.training.organiser_phone}
                     onChange={s=>this.props.updateCallback({organiser_phone: s})}
-                    isValid={this.validateString(this.props.training.organiser_phone)}
+                    isValid={true}
                 />
             </LabelledInput>
             <LabelledInput label="Club">
@@ -162,7 +173,7 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     text={this.props.training.club}
                     onChange={s=>this.props.updateCallback({club: s})}
                     placeholder="e.g. CUOC"
-                    isValid={this.validateString(this.props.training.club)}
+                    isValid={true}
                 />
             </LabelledInput>
             <LabelledInput label="Other Information">
@@ -170,7 +181,7 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                     text={this.props.training.other_info}
                     onChange={s=>this.props.updateCallback({other_info: s})}
                     placeholder="e.g. Orienteering shoes recommended"
-                    isValid={this.validateString(this.props.training.other_info)}
+                    isValid={true}
                 />
             </LabelledInput>
             <LabelledInput label="Cost (Adult)">
