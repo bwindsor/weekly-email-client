@@ -12,3 +12,6 @@ For development, to rebuild the project and open it in the browser, use
 ```sh
 npm run start-dev
 ``` 
+
+## Notes
+`credentials: 'include'` is needed in all REST `fetch` requests to make them authenticated.
