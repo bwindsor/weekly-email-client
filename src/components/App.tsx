@@ -63,9 +63,7 @@ export class App extends React.Component<undefined, AppState> {
         })
             .then(res=>{return res.json()})
             .then((data: ShortTraining[])=>{
-                if (data.length > 0) {
-                    this.setState({allTrainings:data})
-                }
+                this.setState({allTrainings:data})
             }).catch(err=>console.log(err))
     }
 
@@ -118,7 +116,7 @@ export class App extends React.Component<undefined, AppState> {
             if (res.status!=204) {throw Error(res.toString())}
             return this.fetchAllTrainings()
         })
-        .then(()=>{
+        .then((res)=>{
             if (this.state.training.id == id) {
                 if (this.state.allTrainings.length > 0) {
                     this.fetchTraining(this.state.allTrainings[0].id)
@@ -223,7 +221,7 @@ export class App extends React.Component<undefined, AppState> {
                         </div>
                     ) : (
                         <div>
-                        Loading...
+                        {(this.state.allTrainings.length > 0)?'Loading...':'No trainings available'}
                         </div>
                     )}
                 </div>
