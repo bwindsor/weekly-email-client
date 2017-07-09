@@ -106,7 +106,7 @@ export class App extends React.Component<undefined, AppState> {
             method: 'DELETE'
         })
         .then(res=>{
-            if (res.status!=200) {throw Error(res.toString())}
+            if (res.status!=204) {throw Error(res.toString())}
             return this.fetchAllTrainings()
         })
         .then(()=>{
@@ -131,7 +131,7 @@ export class App extends React.Component<undefined, AppState> {
             },
             body: JSON.stringify(newTraining)
         })
-        .then(res=>{return (res.status==200) ? res.json() : Promise.reject(res)})
+        .then(res=>{return (res.status==201) ? res.json() : Promise.reject(res)})
         .then((data:Training)=> {
             this.setState({addTraining: {...this.state.addTraining, isWaiting: false, success: true}})
             return this.fetchAllTrainings().then(()=>{
