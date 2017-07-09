@@ -57,17 +57,21 @@ export class App extends React.Component<undefined, AppState> {
         }).catch(err=>console.log(err))
     }
     fetchAllTrainings():Promise<void> {
-        return fetch(url.resolve(serverName, '/trainings'))
+        return fetch(url.resolve(serverName, '/trainings'), {
+            method: 'GET',
+            credentials: 'include'
+        })
             .then(res=>{return res.json()})
             .then((data: ShortTraining[])=>{
-                if (data.length > 0) {
-                    this.setState({allTrainings:data})
-                }
+                this.setState({allTrainings:data})
             }).catch(err=>console.log(err))
     }
 
     fetchTraining(id:number) {
-        fetch(url.resolve(serverName, '/trainings/'+id.toString())).then(res=>{
+        fetch(url.resolve(serverName, '/trainings/'+id.toString()), {
+            method: 'GET',
+            credentials: 'include'
+        }).then(res=>{
             res.json().then((data:Training)=>{
                 this.setState({isModified: false, training: data})
             }).catch(err=>console.log(err))
@@ -75,7 +79,8 @@ export class App extends React.Component<undefined, AppState> {
     }
     distributeFinal(): void {
         fetch(url.resolve(serverName, '/distribute?test=0'), {
-            method: 'POST'
+            method: 'POST',
+            credentials: 'include'
         })
         .then(res=>{
             if (res.status!=200) {throw Error(res.toString())}
@@ -89,7 +94,8 @@ export class App extends React.Component<undefined, AppState> {
     }
     distributeTest(): void {
         fetch(url.resolve(serverName, '/distribute'), {
-            method: 'POST'
+            method: 'POST',
+            credentials: 'include'
         })
         .then(res=>{
             if (res.status!=200) {throw Error(res.toString())}
@@ -103,13 +109,14 @@ export class App extends React.Component<undefined, AppState> {
     }
     removeTraining(id:number) {
         fetch(url.resolve(serverName, '/trainings/'+id.toString()), {
-            method: 'DELETE'
+            method: 'DELETE',
+            credentials: 'include'
         })
         .then(res=>{
             if (res.status!=204) {throw Error(res.toString())}
             return this.fetchAllTrainings()
         })
-        .then(()=>{
+        .then((res)=>{
             if (this.state.training.id == id) {
                 if (this.state.allTrainings.length > 0) {
                     this.fetchTraining(this.state.allTrainings[0].id)
@@ -129,6 +136,7 @@ export class App extends React.Component<undefined, AppState> {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify(newTraining)
         })
         .then(res=>{return (res.status==201) ? res.json() : Promise.reject(res)})
@@ -151,6 +159,7 @@ export class App extends React.Component<undefined, AppState> {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify(training)
         })
         .then(res=>{
@@ -212,7 +221,7 @@ export class App extends React.Component<undefined, AppState> {
                         </div>
                     ) : (
                         <div>
-                        Loading...
+                        {(this.state.allTrainings.length > 0)?'Loading...':'No trainings available'}
                         </div>
                     )}
                 </div>
