@@ -187,38 +187,49 @@ export class App extends React.Component<undefined, AppState> {
                 
                  <div className={'training-list'}>
                     <h1>Training Editor</h1>
-                    <button className={'new-button'} onClick={e=>this.addTraining()}>
-                        +
-                    </button>
-                    <NavPane
-                        trainings={this.state.allTrainings}
-                        selectedTraining={this.getSelectedTraining()}
-                        onItemSelect={id=>this.fetchTraining(id)}
-                        onItemDelete={id=>this.removeTraining(id)}
-                    />
+                    {(this.state.isModified) ? (
+                        <div>
+                            <button className={(this.isFormValid())?'save-button':'disabled-save-button'} onClick={e=>this.saveTraining()}>
+                                Save
+                            </button>
+                            <button className={'cancel-button'} onClick={e=>{
+                                    this.setState({isModified: false})
+                                    this.fetchTraining(this.getSelectedTraining())
+                                }}>
+                                Cancel
+                            </button>
+                        </div>
+                    ) : (
+                        <div>
+                            <button className={'new-button'} onClick={e=>this.addTraining()}>
+                                +
+                            </button>
+                            <NavPane
+                                trainings={this.state.allTrainings}
+                                selectedTraining={this.getSelectedTraining()}
+                                onItemSelect={id=>this.fetchTraining(id)}
+                                onItemDelete={id=>this.removeTraining(id)}
+                            />
+                            <button className={'preview-button'} onClick={e=>window.open(url.resolve(serverName, '/preview'), '_blank')}>
+                                Preview
+                            </button>
+                            <button className={'distribute-button'} onClick={e=>this.distributeTest()}>
+                                Send test
+                            </button>
+                            {this.state.testSent && (
+                                <button className={'distribute-button'} onClick={e=>this.distributeFinal()}>
+                                    Send
+                                </button>
+                            )}
+                        </div>
+                    )}
                 </div>
                 <div className={(this.state.isModified)?'training-detail-mod':'training-detail-unmod'}>
                     {(this.state.training!=null) ? (
-                        <div>
-                        <button className={(this.isFormValid())?'save-button':'disabled-save-button'} onClick={e=>this.saveTraining()}>
-                            Save
-                        </button>
-                        <button className={'preview-button'} onClick={e=>window.open(url.resolve(serverName, '/preview'), '_blank')}>
-                            Preview
-                        </button>
-                        <button className={'distribute-button'} onClick={e=>this.distributeTest()}>
-                            Send test
-                        </button>
-                        {this.state.testSent && (
-                            <button className={'distribute-button'} onClick={e=>this.distributeFinal()}>
-                                Send
-                            </button>
-                        )}
                         <EditTraining 
                             training={this.state.training}
                             updateCallback={(s) => this.onEditUpdate(s)}
                         />
-                        </div>
                     ) : (
                         <div>
                         {(this.state.allTrainings.length > 0)?'Loading...':'No trainings available'}

@@ -58,7 +58,7 @@ button.remove-button {
     border: 2px solid black;
     cursor: pointer;
 }
-button.save-button, button.disabled-save-button, button.preview-button, button.distribute-button {
+button.save-button, button.cancel-button, button.disabled-save-button, button.preview-button, button.distribute-button {
     border-radius: 5px;
     font-weight: bold;
     font-size: 20px;
@@ -66,9 +66,7 @@ button.save-button, button.disabled-save-button, button.preview-button, button.d
     padding: 0;
     border: 2px solid black;
     cursor: pointer;
-    display: table-cell;
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 5px;
 }
 button.distribute-button {
     background-color: lightcoral;
@@ -80,6 +78,10 @@ button.preview-button {
 }
 button.save-button {
     background-color: green;
+    color: white;
+}
+button.cancel-button {
+    background-color: red;
     color: white;
 }
 button.disabled-save-button {
