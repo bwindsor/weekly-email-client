@@ -16,7 +16,11 @@ export class App extends React.Component<undefined, AppState> {
             allTrainings: [],
             training: null,
             isModified: false,
-            testSent: false,
+            sendMail: {
+                isWaiting: false,
+                success: true,
+                doneOnce: false
+            },
             addTraining: {
                 isWaiting: false,
                 success: true
@@ -44,7 +48,11 @@ export class App extends React.Component<undefined, AppState> {
                 ...prevState,
                 isModified: true,
                 allTrainings: newAll,
-                training: newTraining
+                training: newTraining,
+                sendMail: {
+                    ...prevState.sendMail,
+                    doneOnce: false
+                }
             }
         })
     }
@@ -77,34 +85,24 @@ export class App extends React.Component<undefined, AppState> {
             }).catch(err=>console.log(err))
         })
     }
-    distributeFinal(): void {
-        fetch(url.resolve(serverName, '/distribute?test=0'), {
-            method: 'POST',
-            credentials: 'include'
-        })
-        .then(res=>{
-            if (res.status!=200) {throw Error(res.toString())}
-            this.setState({testSent: false})
-            alert("Distribution successful.")
-        })
-        .catch(err=>{
-            console.log(err)
-            alert("Distribution failed.")
-        })
-    }
-    distributeTest(): void {
+    distribute(): void {
+        this.setState({sendMail: {isWaiting: true, success: false}})
         fetch(url.resolve(serverName, '/distribute'), {
             method: 'POST',
-            credentials: 'include'
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({to: "benwindsor@gmail.com"})
         })
         .then(res=>{
             if (res.status!=200) {throw Error(res.toString())}
-            this.setState({testSent: true})
-            alert("Test distribution successful.")
+            this.setState({sendMail: {isWaiting: false, success: true, doneOnce: true}})
         })
         .catch(err=>{
             console.log(err)
-            alert("Test distribution failed.")
+            this.setState({sendMail: {isWaiting: false, success: false, doneOnce: true}})
         })
     }
     removeTraining(id:number) {
@@ -213,14 +211,14 @@ export class App extends React.Component<undefined, AppState> {
                             <button className={'preview-button'} onClick={e=>window.open(url.resolve(serverName, '/preview'), '_blank')}>
                                 Preview
                             </button>
-                            <button className={'distribute-button'} onClick={e=>this.distributeTest()}>
-                                Send test
+                            <button className={'distribute-button'} onClick={this.state.sendMail.isWaiting?(e=>{}):(e=>this.distribute())}>
+                                {this.state.sendMail.isWaiting?'Sending...':(this.state.sendMail.success?'Send':'Retry')}
                             </button>
-                            {this.state.testSent && (
-                                <button className={'distribute-button'} onClick={e=>this.distributeFinal()}>
-                                    Send
-                                </button>
-                            )}
+                            <div>
+                                {(!this.state.sendMail.doneOnce || this.state.sendMail.isWaiting)?'':(
+                                    this.state.sendMail.success?'Sent successfully':'Send failed'
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>

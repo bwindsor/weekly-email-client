@@ -65,13 +65,14 @@ export interface TrainingSubset {
 interface RequestState {
     isWaiting: boolean;
     success: boolean;
+    doneOnce?: boolean;
 }
 
 interface AppState {
     allTrainings: ShortTraining[]
     training: Training;
     isModified: boolean;
-    testSent: boolean;
+    sendMail: RequestState;
     addTraining: RequestState;
     updateTraining: RequestState;
 }
