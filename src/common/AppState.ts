@@ -67,12 +67,38 @@ interface RequestState {
     success: boolean;
 }
 
+interface SendEmailState extends RequestState {
+    isWaiting: boolean;
+    success: boolean;
+    doneOnce: boolean;
+    isConfirming: boolean;
+    emailAddress: string;
+}
+
 interface AppState {
-    allTrainings: ShortTraining[]
-    training: Training;
+/**
+ * Array of training summaries
+ */
+    allTrainings: ShortTraining[];
+/**
+ * Detailed information for the currently selected training. This is null if nothing is selected or available.
+ */
+    training: Training | null;
+/**
+ * Whether the training currently being viewed has been modified at all
+ */
     isModified: boolean;
-    testSent: boolean;
+/**
+ * State of the POST request to the server when sending mail
+ */
+    sendMail: SendEmailState;
+/**
+ * State of the POST request to the server when adding a training
+ */
     addTraining: RequestState;
+/**
+ * State of the POST request to the server when updating a training
+ */
     updateTraining: RequestState;
 }
 

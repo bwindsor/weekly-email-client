@@ -193,11 +193,11 @@ export default class EditTraining extends React.Component<EditTrainingParams, Ed
                 />
             </LabelledInput>
             <LabelledInput label="Juniors allowed?">
-                <tbody><tr>
-                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==1} value="yes"  onChange={e=>this.onJuniorsChange(e)}>Yes</input></td>                    
-                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==0} value="no" onChange={e=>this.onJuniorsChange(e)}>No</input></td>
-                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==null} value="Not specified"  onChange={e=>this.onJuniorsChange(e)}>Not specified</input></td>
-                </tr></tbody>
+                <table><tbody><tr>
+                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==1} value="yes"  onChange={e=>this.onJuniorsChange(e)}/>Yes</td>                    
+                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==0} value="no" onChange={e=>this.onJuniorsChange(e)}/>No</td>
+                    <td><input type="radio" name="juniors" checked={this.props.training.juniors==null} value="Not specified"  onChange={e=>this.onJuniorsChange(e)}/>Not specified</td>
+                </tr></tbody></table>
             </LabelledInput>
             <LabelledInput label="Cost (Junior)">
                 <TextInput
