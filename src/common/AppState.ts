@@ -65,7 +65,14 @@ export interface TrainingSubset {
 interface RequestState {
     isWaiting: boolean;
     success: boolean;
-    doneOnce?: boolean;
+}
+
+interface SendEmailState extends RequestState {
+    isWaiting: boolean;
+    success: boolean;
+    doneOnce: boolean;
+    isConfirming: boolean;
+    emailAddress: string;
 }
 
 interface AppState {
@@ -82,13 +89,9 @@ interface AppState {
  */
     isModified: boolean;
 /**
- * Whether the UI is currently asking the user to enter an email address to distribute to
- */
-    isConfirmingEmail: boolean;
-/**
  * State of the POST request to the server when sending mail
  */
-    sendMail: RequestState;
+    sendMail: SendEmailState;
 /**
  * State of the POST request to the server when adding a training
  */

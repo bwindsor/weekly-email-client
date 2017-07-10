@@ -1,7 +1,13 @@
+let ReactModalDialog = require('react-modal-dialog');
+let ModalContainer = ReactModalDialog.ModalContainer
+let ModalDialog = ReactModalDialog.ModalDialog
 import * as React from "react"
 import AppState, {trainingToShortTraining, createDefaultTraining, Training, TrainingSubset, ShortTraining} from "../common/AppState"
 import NavPane from './NavPane'
+import LabelledInput from './LabelledInput'
+import TextInput from './TextInput'
 import EditTraining from "./EditTraining"
+
 // import fetch from "node-fetch"
 import * as url from 'url'
 
@@ -16,11 +22,12 @@ export class App extends React.Component<undefined, AppState> {
             allTrainings: [],
             training: null,
             isModified: false,
-            isConfirmingEmail: false,
             sendMail: {
                 isWaiting: false,
                 success: true,
-                doneOnce: false
+                doneOnce: false,
+                isConfirming: false,
+                emailAddress: ''
             },
             addTraining: {
                 isWaiting: false,
@@ -35,6 +42,21 @@ export class App extends React.Component<undefined, AppState> {
 
     getSelectedTraining(): number {
         return (this.state.training==null) ? null : this.state.training.id
+    }
+
+    onSendClick() {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                sendMail: {
+                    ...prevState.sendMail,
+                    isConfirming: true
+                }
+            }
+        })
+    }
+    validateEmail(s: string) : boolean {
+        return s!=null && s.match(/\w+@\w+\.\w+/) != null
     }
 
     onEditUpdate(stateDiff: TrainingSubset) : void {
@@ -86,8 +108,40 @@ export class App extends React.Component<undefined, AppState> {
             }).catch(err=>console.log(err))
         })
     }
+    
+    updateDistributeAddress(emailAddress: string) : void {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                sendMail: {
+                    ...prevState.sendMail,
+                    emailAddress: emailAddress
+                }
+            }
+        })
+    }
+    cancelDistribute(): void {
+        this.setState(prevState=>{
+            return {
+                ...prevState,
+                sendMail: {
+                    ...prevState.sendMail,
+                    isConfirming: false
+                }
+            }
+        })
+    }
     distribute(toAddress: string): void {
-        this.setState({sendMail: {isWaiting: true, success: false}})
+        this.setState(prevState=> {
+            return {
+                ...prevState,
+                sendMail: {
+                    ...prevState.sendMail,
+                    isWaiting: true,
+                    success: false
+                }
+            }
+        })
         fetch(url.resolve(serverName, '/distribute'), {
             method: 'POST',
             headers: {
@@ -99,11 +153,31 @@ export class App extends React.Component<undefined, AppState> {
         })
         .then(res=>{
             if (res.status!=200) {throw Error(res.toString())}
-            this.setState({sendMail: {isWaiting: false, success: true, doneOnce: true}})
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    sendMail: {
+                        ...prevState.sendMail,
+                        isWaiting: false,
+                        success: true,
+                        doneOnce: true
+                    }
+                }
+            })
         })
         .catch(err=>{
             console.log(err)
-            this.setState({sendMail: {isWaiting: false, success: false, doneOnce: true}})
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    sendMail: {
+                        ...prevState.sendMail,
+                        isWaiting: false,
+                        success: false,
+                        doneOnce: true
+                    }
+                }
+            })
         })
     }
     removeTraining(id:number) {
@@ -212,7 +286,7 @@ export class App extends React.Component<undefined, AppState> {
                             <button className={'preview-button'} onClick={e=>window.open(url.resolve(serverName, '/preview'), '_blank')}>
                                 Preview
                             </button>
-                            <button className={'distribute-button'} onClick={this.state.sendMail.isWaiting?(e=>{}):(e=>this.setState({isConfirmingEmail: true}))}>
+                            <button className={'distribute-button'} onClick={this.state.sendMail.isWaiting?(e=>{}):(e=>this.onSendClick())}>
                                 {this.state.sendMail.isWaiting?'Sending...':(this.state.sendMail.success?'Send':'Retry')}
                             </button>
                             <div>
@@ -235,6 +309,35 @@ export class App extends React.Component<undefined, AppState> {
                         </div>
                     )}
                 </div>
+                <div>
+                {this.state.sendMail.isConfirming &&
+                    <ModalContainer onClose={()=>this.cancelDistribute()} zIndex={1000}>
+                    <ModalDialog onClose={()=>this.cancelDistribute()}>
+                        <LabelledInput label="Enter email address">
+                            <TextInput
+                                text={this.state.sendMail.emailAddress}
+                                onChange={s=>this.updateDistributeAddress(s)}
+                                isValid={this.validateEmail(this.state.sendMail.emailAddress)}
+                                placeholder="e.g. soc-cuoc-training@lists.cam.ac.uk"
+                            />
+                        </LabelledInput>
+                        <button className={'distribute-button'} onClick={()=>this.cancelDistribute()}>
+                            Cancel
+                        </button>
+                        {this.validateEmail(this.state.sendMail.emailAddress) &&
+                            <button className={'distribute-button'} onClick={e=>{
+                                this.distribute(this.state.sendMail.emailAddress)
+                                this.cancelDistribute()
+                                }}>
+                                Send
+                            </button>
+                        }
+                    </ModalDialog>
+                    </ModalContainer>
+                }
+                </div>
+                
+                <div/>
             </div>
         )
 
