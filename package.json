@@ -4,7 +4,7 @@
   "description": "Web client for the weekly-email backend.",
   "scripts": {
     "start": "start /max ./dist/index.html",
-    "start-dev": "npm run build && start /max dist/index.html",
+    "start-dev": "node_modules/.bin/webpack-dev-server --watchContentBase --inline --open",
     "build": "node_modules/.bin/webpack",
     "test": ""
   },
@@ -35,6 +35,7 @@
     "source-map-loader": "^0.2.1",
     "style-loader": "^0.18.2",
     "typescript": "2.3.4",
-    "webpack": "^3.0.0"
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.1"
   }
 }

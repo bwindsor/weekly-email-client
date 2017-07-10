@@ -46,10 +46,11 @@ export default class NavPane extends React.Component<NavPaneProps, undefined> {
     render() {
         return (
             <table className="nav-table">
+                <tbody>
                 {this.props.trainings.map((t, i) => {
                     let d = new Date(t.date_start*1000)
                     return (
-                    <tr className={(this.props.selectedTraining!=null && this.props.selectedTraining==t.id)?'navRow-selected':'navRow'}
+                        <tr className={(this.props.selectedTraining!=null && this.props.selectedTraining==t.id)?'navRow-selected':'navRow'}
                         id={'nav'+t.id.toString()}
                         key={t.id.toString()}
                         onClick={e=>this.onClick(e)}>
@@ -63,6 +64,7 @@ export default class NavPane extends React.Component<NavPaneProps, undefined> {
                         </td>
                     </tr>
                 )})}
+            </tbody>
             </table>
         )
          

@@ -16,6 +16,7 @@ export class App extends React.Component<undefined, AppState> {
             allTrainings: [],
             training: null,
             isModified: false,
+            isConfirmingEmail: false,
             sendMail: {
                 isWaiting: false,
                 success: true,
@@ -85,7 +86,7 @@ export class App extends React.Component<undefined, AppState> {
             }).catch(err=>console.log(err))
         })
     }
-    distribute(): void {
+    distribute(toAddress: string): void {
         this.setState({sendMail: {isWaiting: true, success: false}})
         fetch(url.resolve(serverName, '/distribute'), {
             method: 'POST',
@@ -94,7 +95,7 @@ export class App extends React.Component<undefined, AppState> {
                 'Content-Type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify({to: "benwindsor@gmail.com"})
+            body: JSON.stringify({to: toAddress})
         })
         .then(res=>{
             if (res.status!=200) {throw Error(res.toString())}
@@ -182,12 +183,12 @@ export class App extends React.Component<undefined, AppState> {
     render() {
         return (
             <div>
-                
                  <div className={'training-list'}>
                     <h1>Training Editor</h1>
                     {(this.state.isModified) ? (
                         <div>
-                            <button className={(this.isFormValid())?'save-button':'disabled-save-button'} onClick={e=>this.saveTraining()}>
+                            <button className={(this.isFormValid())?'save-button':'disabled-save-button'}
+                                      onClick={(this.isFormValid())?e=>this.saveTraining():e=>{}}>
                                 Save
                             </button>
                             <button className={'cancel-button'} onClick={e=>{
@@ -211,7 +212,7 @@ export class App extends React.Component<undefined, AppState> {
                             <button className={'preview-button'} onClick={e=>window.open(url.resolve(serverName, '/preview'), '_blank')}>
                                 Preview
                             </button>
-                            <button className={'distribute-button'} onClick={this.state.sendMail.isWaiting?(e=>{}):(e=>this.distribute())}>
+                            <button className={'distribute-button'} onClick={this.state.sendMail.isWaiting?(e=>{}):(e=>this.setState({isConfirmingEmail: true}))}>
                                 {this.state.sendMail.isWaiting?'Sending...':(this.state.sendMail.success?'Send':'Retry')}
                             </button>
                             <div>
@@ -236,5 +237,6 @@ export class App extends React.Component<undefined, AppState> {
                 </div>
             </div>
         )
+
     }
 }

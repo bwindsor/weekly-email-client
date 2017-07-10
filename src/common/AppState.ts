@@ -69,11 +69,33 @@ interface RequestState {
 }
 
 interface AppState {
-    allTrainings: ShortTraining[]
-    training: Training;
+/**
+ * Array of training summaries
+ */
+    allTrainings: ShortTraining[];
+/**
+ * Detailed information for the currently selected training. This is null if nothing is selected or available.
+ */
+    training: Training | null;
+/**
+ * Whether the training currently being viewed has been modified at all
+ */
     isModified: boolean;
+/**
+ * Whether the UI is currently asking the user to enter an email address to distribute to
+ */
+    isConfirmingEmail: boolean;
+/**
+ * State of the POST request to the server when sending mail
+ */
     sendMail: RequestState;
+/**
+ * State of the POST request to the server when adding a training
+ */
     addTraining: RequestState;
+/**
+ * State of the POST request to the server when updating a training
+ */
     updateTraining: RequestState;
 }
 
