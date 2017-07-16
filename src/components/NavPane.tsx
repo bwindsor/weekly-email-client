@@ -1,5 +1,8 @@
 import * as React from "react"
 import {ShortTraining} from '../common/AppState'
+let ReactModalDialog = require('react-modal-dialog');
+let ModalContainer = ReactModalDialog.ModalContainer
+let ModalDialog = ReactModalDialog.ModalDialog
 
 interface NavPaneProps {
     trainings: ShortTraining[];
@@ -8,13 +11,26 @@ interface NavPaneProps {
     onItemDelete: (id: number) => void;
 }
 
+interface NavPaneState {
+    isConfirmingDelete: boolean
+    idBeingDeleteConfirmed: number
+}
+
 let styles = {
     wrapper: {width: "700px", padding: "3px"},
     left: {width: "200px", height: "100%", float:"left", display:'inline-block'},
     right: {width: "500px", height: "100%", display:'inline-block'}
 }
 
-export default class NavPane extends React.Component<NavPaneProps, undefined> {
+export default class NavPane extends React.Component<NavPaneProps, NavPaneState> {
+
+    constructor(props: NavPaneProps) {
+        super(props)
+        this.state = {
+            isConfirmingDelete: false,
+            idBeingDeleteConfirmed: null
+        }
+    }
 
     onClick(e: React.MouseEvent<HTMLTableRowElement>) : void {
         let id = this.parseId(e.currentTarget.id)
@@ -28,10 +44,18 @@ export default class NavPane extends React.Component<NavPaneProps, undefined> {
         e.stopPropagation()
         let id = this.parseId(e.currentTarget.id)
         if (id!=null) {
-            this.props.onItemDelete(id)
+            this.setState({isConfirmingDelete: true, idBeingDeleteConfirmed: id})
         } else {
             console.log('Error during delete click callback')
         }
+    }
+    onDeleteConfirm(){
+        if (this.state.idBeingDeleteConfirmed == null) {
+            alert('Error deleting')
+            return
+        }
+        this.props.onItemDelete(this.state.idBeingDeleteConfirmed)
+        this.setState({isConfirmingDelete: false, idBeingDeleteConfirmed: null})
     }
     parseId(id: string):(number | null) {
         let match = id.match(/\d+/)
@@ -45,6 +69,7 @@ export default class NavPane extends React.Component<NavPaneProps, undefined> {
 
     render() {
         return (
+            <div>
             <table className="nav-table">
                 <tbody>
                 {this.props.trainings.map((t, i) => {
@@ -66,6 +91,16 @@ export default class NavPane extends React.Component<NavPaneProps, undefined> {
                 )})}
             </tbody>
             </table>
+            {this.state.isConfirmingDelete &&
+                <ModalContainer onClose={()=>this.setState({isConfirmingDelete: false})} zIndex={1000}>
+                    <ModalDialog onClose={()=>this.setState({isConfirmingDelete: false})}>
+                        Really delete this training session?
+                        <button className={'distribute-button'} onClick={e=>this.setState({isConfirmingDelete:false})}>No</button>
+                        <button className={'distribute-button'} onClick={e=>this.onDeleteConfirm()}>Yes</button>
+                    </ModalDialog>
+                </ModalContainer>
+            }
+            </div>
         )
          
     }
